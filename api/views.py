@@ -12,12 +12,12 @@ class SpaceshipListCreateView(APIView):
     """ 
     List all Spaceships, Add new Spaceship
     """
-    def get(self, request):
+    def get(self, request, format=None):
         spaceships = Spaceship.objects.all()
         serializer = SpaceshipSerializer(spaceships, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     # Add spaceship
-    def post(self, request):
+    def post(self, request, format=None):
         serializer = SpaceshipSerializer(data=request.data)
         if serializer.is_valid():
             location = serializer.validated_data.get('location')
@@ -38,7 +38,7 @@ class SpaceshipDetailView(APIView):
         except Spaceship.DoesNotExist:
             raise Http404
 
-    def put(self, request, id):
+    def put(self, request, id, format=None):
         spaceship = self.get_object(id)
         try:
             spaceship_status = {'status':request.data['status']}
@@ -50,7 +50,7 @@ class SpaceshipDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def delete(self, request, id):
+    def delete(self, request, id, format=None):
         spaceship = self.get_object(id)
         spaceship.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -59,12 +59,12 @@ class LocationListCreateView(APIView):
     """ 
     List all Locations, Create new Location
     """
-    def get(self, request):
+    def get(self, request, format=None):
         locations = Location.objects.all()
         serializer = LocationSerializer(locations, many=True)
         return Response(serializer.data, status=200)
     # Add new location
-    def post(self, request):
+    def post(self, request, format=None):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -81,13 +81,16 @@ class LocationDetailView(APIView):
         except Location.DoesNotExist:
             raise Http404
     #Note: deleting a location will also delete all spaceships at that location
-    def delete(self, request, id):
+    def delete(self, request, id, format=None):
         location = self.get_object(id)
         location.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class SpaceshipTravelView(APIView):
-    def put(self, request, spaceship_id):
+    """ 
+    Spaceship Travel from Source to Destination
+    """
+    def put(self, request, spaceship_id, format=None):
         data = request.data
         try:
             # get destination id
