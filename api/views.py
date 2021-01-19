@@ -90,13 +90,12 @@ class SpaceshipTravelView(APIView):
     def put(self, request, spaceship_id):
         data = request.data
         try:
-            # get location ids
-            current_loc = request.data['location']
+            # get destination id
             destination_loc = request.data['destination']
             # get spaceship id
             spaceship = Spaceship.objects.get(id=spaceship_id)
-            # get location objects
-            location = Location.objects.get(id=current_loc)
+            # get location and destination objects
+            location = Location.objects.get(id=spaceship.location.id)
             destination = Location.objects.get(id=destination_loc)
         except KeyError:
             return Response({"error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
