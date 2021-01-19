@@ -76,6 +76,43 @@ class SpaceshipListCreateView(APITestCase):
                 spaceship.model_name
             )
 
+class SpaceshipDetatilView(APITestCase):
+    def setUp(self) -> None:
+        location = Location.objects.create(
+            city="Mumbai",
+            planet="Earth",
+            capacity=1
+        )
+        self.spaceship = Spaceship.objects.create(
+                name='enterprise',
+                model_name='stomble101',
+                location=location   
+        )
+        # get url for /api/spaceship/id
+        self.url = reverse('spaceship-detail', kwargs={'id':self.spaceship.id})
+
+    # tests for updating spaceship status
+    def test_update_spaceship_status(self):
+        data = {
+            "status": "maintenance"
+        }
+        response = self.client.put(self.url, data=data, format="json")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEquals(
+            data['status'],
+            response_data['status']
+        )
+    
+    def test_delete_spaceship_status(self):
+        # send delete request to /api/spaceship/id
+        response = self.client.delete(self.url)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEquals(
+            Spaceship.objects.count(),
+            0
+        )
+
 class LocationListCreateView(APITestCase):
     def setUp(self) -> None:
         # get url for /api/location
