@@ -12,6 +12,5 @@ Build (Ubuntu/Linux)
 5) Run server
     python manage.py runserver
 
-The API is documented at 127.0.0.1:8000/api/docs/ 
-To interact with the API go to the url where you can send request by creating a JSON
-object in content.
+The API is documented at <127.0.0.1:8000/api/docs/> .
+To interact with the API, go to the desired url where you can send a POST or PUT request by creating a JSON object in the content box. Similarly a DELETE button is provided to send a DELETE request.
