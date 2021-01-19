@@ -167,3 +167,21 @@ class LocationListCreateView(APITestCase):
             data['planet'],
             location.planet
         )
+
+class LocationDetailView(APITestCase):
+    def setUp(self) -> None:
+        self.location = Location.objects.create(
+            city="Mumbai",
+            planet="Earth",
+            capacity=1
+        )
+        # get url for /api/location/id
+        self.url = reverse('location-detail', kwargs={'id':self.location.id})
+    def test_delete_location_status(self):
+        # send delete request to /api/location/id
+        response = self.client.delete(self.url)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEquals(
+            Location.objects.count(),
+            0
+        )

@@ -56,7 +56,9 @@ class SpaceshipDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class LocationListCreateView(APIView):
-    # List all Locations
+    """ 
+    List all Locations, Create new Location
+    """
     def get(self, request):
         locations = Location.objects.all()
         serializer = LocationSerializer(locations, many=True)
@@ -68,3 +70,18 @@ class LocationListCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LocationDetailView(APIView):
+    """ 
+    Delete Location
+    """
+    def get_object(self, id):
+        try:
+            return Location.objects.get(id=id)
+        except Location.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, id):
+        location = self.get_object(id)
+        location.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
