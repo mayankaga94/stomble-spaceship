@@ -67,9 +67,59 @@ class SpaceshipListCreateView(APITestCase):
             data = response_json[0]
             self.assertEquals(
                 data['name'],
-                spaceship.title
+                spaceship.name
             )
             self.assertEquals(
                 data['model_name'],
-                spaceship.text
+                spaceship.model_name
             )
+
+class LocationListCreateView(APITestCase):
+    def setUp(self) -> None:
+        self.url = reverse('location-list-create',)
+        
+    def test_create_location(self):
+        self.assertEquals(
+            Location.objects.count(),
+            0
+        )
+        data = {
+            'city': 'Sydney',
+            'planet': 'Earth',
+            'capacity': 3,
+        }
+        # send post request to /api/location to create new spaceship
+        response = self.client.post(self.url, data=data, format='json')
+        # check response for 201 created
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        # check database for location
+        self.assertEquals(
+            Location.objects.count(),
+            0
+        )
+
+    def test_list_location(self):
+        location = Location.objects.create(
+            city='Sydney',
+            planet='Earth',
+            capacity=10
+        )
+        response = self.client.get(self.url)
+        response_json = response.json()
+        self.assertEquals(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEquals(
+            len(response_json),
+            1
+        )
+        data = response_json[0]
+        self.assertEquals(
+            data['city'],
+            location.city
+        )
+        self.assertEquals(
+            data['model_name'],
+            location.planet
+        )
