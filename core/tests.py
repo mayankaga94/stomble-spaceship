@@ -1,5 +1,5 @@
 from django.test import TestCase
-from app.models import Spaceship, Location
+from core.models import Spaceship, Location
 
 # tests for Location Model
 class LocationTest(TestCase):
