@@ -37,7 +37,7 @@ class SpaceshipDetailView(APIView):
             return Spaceship.objects.get(id=id)
         except Spaceship.DoesNotExist:
             raise Http404
-            
+
     def put(self, request, id):
         spaceship = self.get_object(id)
         try:
@@ -47,7 +47,7 @@ class SpaceshipDetailView(APIView):
         serializer = SpaceshipSerializer(spaceship,data=spaceship_status, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_ACCEPTED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, id):
