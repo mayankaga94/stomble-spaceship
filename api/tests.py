@@ -99,7 +99,7 @@ class LocationListCreateView(APITestCase):
         # check database for location
         self.assertEquals(
             Location.objects.count(),
-            0
+            1
         )
 
     def test_list_location(self):
@@ -127,6 +127,6 @@ class LocationListCreateView(APITestCase):
             location.city
         )
         self.assertEquals(
-            data['model_name'],
+            data['planet'],
             location.planet
         )
