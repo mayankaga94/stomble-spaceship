@@ -80,8 +80,44 @@ class LocationDetailView(APIView):
             return Location.objects.get(id=id)
         except Location.DoesNotExist:
             raise Http404
-
+    #Note: deleting a location will also delete all spaceships at that location
     def delete(self, request, id):
         location = self.get_object(id)
         location.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class SpaceshipTravelView(APIView):
+    def put(self, request, spaceship_id):
+        data = request.data
+        try:
+            # get location ids
+            current_loc = request.data['location']
+            destination_loc = request.data['destination']
+            # get spaceship id
+            spaceship = Spaceship.objects.get(id=spaceship_id)
+            # get location objects
+            location = Location.objects.get(id=current_loc)
+            destination = Location.objects.get(id=destination_loc)
+        except KeyError:
+            return Response({"error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+        except Spaceship.DoesNotExist:
+            return Response({"error": "Spaceship Does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        except Location.DoesNotExist:
+            return Response({"error": "Location Does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # check if spaceship is operational
+        if spaceship.status != "op":
+            return Response({"error": "Spaceship is not operational"})
+
+        # check if location has free hangar space or capacity
+        if destination.spaceship_stationed() + 1 > destination.capacity:
+            return Response({"error": "Destination spaceport capacity is full"})
+
+        # check if spaceship is located in the same location as destination
+        if destination == spaceship.location:
+            return Response({"error": "Spaceship already stationed here"})
+
+        # update spaceship location
+        spaceship.location = destination
+        spaceship.save()
+        return Response(spaceship.serialize(), status=status.HTTP_200_OK)

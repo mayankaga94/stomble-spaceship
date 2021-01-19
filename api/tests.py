@@ -185,3 +185,68 @@ class LocationDetailView(APITestCase):
             Location.objects.count(),
             0
         )
+
+class SpaceshipTravelView(APITestCase):
+    def setUp(self) -> None:
+        self.location = Location.objects.create(
+            city="London",
+            planet="Earth",
+            capacity=3
+        )
+        self.spaceship = Spaceship.objects.create(
+            name='enterprise',
+            model_name='stomble101',
+            location=self.location   
+        )
+        self.url = reverse('spaceship-travel', kwargs={"id":self.spaceship.id})
+
+    def test_spaceship_travel(self):
+        location_1 = Location.objects.create(
+            city="Mumbai",
+            planet="Earth",
+            capacity=1
+        )
+        location_2 = Location.objects.create(
+            city='Sydney',
+            planet='Earth',
+            capacity=2
+        )
+        spaceship_2 = Spaceship.objects.create(
+            name='enterprise_2',
+            model_name='Yamaha',
+            location=location_1,
+            status="maintenance"
+        )
+        # spaceship enterprise tries to travel to Mumbai, Earth
+        data = {
+            "location": self.spaceship.location.id,
+            "destination": location_1.id
+        }
+        response = self.client.put(self.url, data=data, format="json")
+        response_data = response.json()
+        self.assertEquals(
+            response_data["error"],
+            "Destination spaceport capacity is full"
+        )
+        # spaceship enterprise tries to travel to Sydney, Earth
+        data = {
+            "location": self.spaceship.location.id,
+            "destination": location_2.id
+        }
+        response = self.client.put(self.url, data=data, format="json")
+        response_data = response.json()
+        self.assertEquals(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        # spaceship enterprise_2 is not opertational and tries to travel to Sydney, Earth
+        data = {
+            "location": location_1.id,
+            "destination": location_2.id
+        }
+        response = self.client.put(self.url, data=data, format="json")
+        response_data = response.json()
+        self.assertEquals(
+            response_data["error"],
+            "Spaceship is not operational"
+        )
