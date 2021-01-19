@@ -196,9 +196,10 @@ class SpaceshipTravelView(APITestCase):
         self.spaceship = Spaceship.objects.create(
             name='enterprise',
             model_name='stomble101',
-            location=self.location   
+            location=self.location,
+            status='operational'
         )
-        self.url = reverse('spaceship-travel', kwargs={"id":self.spaceship.id})
+        self.url = reverse('spaceship-travel', kwargs={"spaceship_id":self.spaceship.id})
 
     def test_spaceship_travel(self):
         location_1 = Location.objects.create(
@@ -244,7 +245,11 @@ class SpaceshipTravelView(APITestCase):
             "location": location_1.id,
             "destination": location_2.id
         }
-        response = self.client.put(self.url, data=data, format="json")
+        response = self.client.put(
+            reverse('spaceship-travel', kwargs={"spaceship_id": spaceship_2.id}), 
+            data=data, 
+            format="json"
+        )
         response_data = response.json()
         self.assertEquals(
             response_data["error"],

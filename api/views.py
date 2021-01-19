@@ -106,7 +106,7 @@ class SpaceshipTravelView(APIView):
             return Response({"error": "Location Does not exist"}, status=status.HTTP_400_BAD_REQUEST)
         
         # check if spaceship is operational
-        if spaceship.status != "op":
+        if spaceship.status != "operational":
             return Response({"error": "Spaceship is not operational"})
 
         # check if location has free hangar space or capacity
