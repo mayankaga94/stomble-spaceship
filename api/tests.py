@@ -4,11 +4,11 @@ from django.test import TestCase
 from rest_framework.test import APITestCase
 from rest_framework.views import status
 
-from app.models import Spaceship, Location
+from core.models import Spaceship, Location
 
 class SpaceshipListCreateView(APITestCase):
     def setUp(self) -> None:
-        self.url = reverse('api-spaceship-list',)
+        self.url = reverse('spaceship-list-create',)
         Location.objects.create(
             city="Mumbai",
             planet="Earth",
@@ -34,7 +34,7 @@ class SpaceshipListCreateView(APITestCase):
         # Check default status is operational
         self.assertEquals(
             spaceship.status,
-            'op'
+            'operational'
         )
         data = {
             'name': 'enterprise2',

@@ -5,10 +5,10 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from app.models import Spaceship, Location
+from core.models import Spaceship, Location
 from .serializers import SpaceshipSerializer, LocationSerializer
 
-class SpaceshipCreateList(APIView):
+class SpaceshipListCreateView(APIView):
     # List all spaceships
     def get(self, request):
         spaceships = Spaceship.objects.all()

@@ -16,7 +16,6 @@ class LocationSerializer(serializers.ModelSerializer):
         ]
 
 class SpaceshipSerializer(serializers.ModelSerializer):
-    # location = LocationSerializer(required=True)
     class Meta:
         model = Spaceship
         fields = ['id', 'name', 'model_name', 'location', 'status']
