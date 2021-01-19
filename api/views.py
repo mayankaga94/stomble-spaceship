@@ -10,7 +10,10 @@ from .serializers import SpaceshipSerializer, LocationSerializer
 
 class SpaceshipListCreateView(APIView):
     """ 
-    List all Spaceships, Add new Spaceship
+    get:
+    List all Spaceships
+    post:
+    Add new Spaceship
     """
     def get(self, request, format=None):
         spaceships = Spaceship.objects.all()
@@ -30,7 +33,10 @@ class SpaceshipListCreateView(APIView):
 
 class SpaceshipDetailView(APIView):
     """ 
-    Update Spaceship Status, Delete Spaceship
+    put:
+    Update Spaceship Status
+    delete:
+    Delete Spaceship
     """
     def get_object(self, id):
         try:
@@ -57,7 +63,10 @@ class SpaceshipDetailView(APIView):
 
 class LocationListCreateView(APIView):
     """ 
-    List all Locations, Create new Location
+    get:
+    List all Locations
+    post:
+    Create new Location
     """
     def get(self, request, format=None):
         locations = Location.objects.all()
@@ -73,6 +82,7 @@ class LocationListCreateView(APIView):
 
 class LocationDetailView(APIView):
     """ 
+    delete:
     Delete Location
     """
     def get_object(self, id):
@@ -88,6 +98,7 @@ class LocationDetailView(APIView):
 
 class SpaceshipTravelView(APIView):
     """ 
+    put:
     Spaceship Travel from Source to Destination
     """
     def put(self, request, spaceship_id, format=None):
