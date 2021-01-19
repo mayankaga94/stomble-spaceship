@@ -13,7 +13,7 @@ class SpaceshipListCreateView(APIView):
     def get(self, request):
         spaceships = Spaceship.objects.all()
         serializer = SpaceshipSerializer(spaceships, many=True)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     # Add spaceship
     def post(self, request):
         serializer = SpaceshipSerializer(data=request.data)
@@ -21,6 +21,20 @@ class SpaceshipListCreateView(APIView):
             location = serializer.validated_data.get('location')
             if location.spaceship_stationed() == location.capacity:
                 return Response({"error": "Location has no space to store spaceship"},status=status.HTTP_200_OK)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LocationListCreateView(APIView):
+    # List all Locations
+    def get(self, request):
+        locations = Location.objects.all()
+        serializer = LocationSerializer(locations, many=True)
+        return Response(serializer.data, status=200)
+    # Add new location
+    def post(self, request):
+        serializer = LocationSerializer(data=request.data)
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

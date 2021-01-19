@@ -8,7 +8,9 @@ from core.models import Spaceship, Location
 
 class SpaceshipListCreateView(APITestCase):
     def setUp(self) -> None:
+        # get url for /api/spaceship
         self.url = reverse('spaceship-list-create',)
+        # Create a Location object in test database
         Location.objects.create(
             city="Mumbai",
             planet="Earth",
@@ -76,9 +78,11 @@ class SpaceshipListCreateView(APITestCase):
 
 class LocationListCreateView(APITestCase):
     def setUp(self) -> None:
+        # get url for /api/location
         self.url = reverse('location-list-create',)
         
     def test_create_location(self):
+        # check no location objects in test database
         self.assertEquals(
             Location.objects.count(),
             0
@@ -88,7 +92,7 @@ class LocationListCreateView(APITestCase):
             'planet': 'Earth',
             'capacity': 3,
         }
-        # send post request to /api/location to create new spaceship
+        # send post request to /api/location to create new location
         response = self.client.post(self.url, data=data, format='json')
         # check response for 201 created
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
@@ -99,11 +103,13 @@ class LocationListCreateView(APITestCase):
         )
 
     def test_list_location(self):
+        # Create new location object in test database
         location = Location.objects.create(
             city='Sydney',
             planet='Earth',
             capacity=10
         )
+        # send get request to retrieve all locations
         response = self.client.get(self.url)
         response_json = response.json()
         self.assertEquals(
@@ -115,6 +121,7 @@ class LocationListCreateView(APITestCase):
             1
         )
         data = response_json[0]
+        # check location is a match
         self.assertEquals(
             data['city'],
             location.city
