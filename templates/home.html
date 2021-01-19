@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+<form id="add_spaceship">
+    <h3>Add Spaceship</h3>
+    <div class="mb-3">
+      <label for="spaceship_name" class="form-label">Spaceship Name</label>
+      <input type="text" class="form-control" id="spaceship_name" aria-describedby="">
+    </div>
+    <div class="mb-3">
+        <label for="model_name" class="form-label">Spaceship Model Name</label>
+        <input type="text" class="form-control" id="model_name" aria-describedby="">
+    </div>
+    <div class="mb-3">
+        <label for="spaceship_location" class="form-label">Location Id</label>
+        <input type="number" class="form-control" id="spaceship_location" aria-describedby="">
+    </div>
+    <div class="mb-3">
+        <label for="spaceship_status" class="form-label">Spaceship Status</label>
+        <input type="text" class="form-control" id="spaceship_status" aria-describedby="">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <div class="col-12" id="add_spaceship_return">
+
+  </div>
+
+<script>
+    var serializeForm = function (form) {
+        var obj = {};
+        var formData = new FormData(form);
+        for (var key of formData.keys()) {
+            obj[key] = formData.get(key);
+        }
+        return obj;
+    };
+    console.log(spaceship_status)
+    var spaceshipAddForm = document.getElementById("add_spaceship");
+    spaceshipAddForm.addEventListener('submit', function(event){
+        event.preventDefault()
+        let name = document.getElementById("spaceship_name").value;
+        let model_name = document.getElementById("model_name").value;
+        let location = document.getElementById("spaceship_location").value;
+        let spaceship_status = document.getElementById("spaceship_status").value;
+        let data = {
+            "name": name,
+            "model_name": model_name,
+            "location": location,
+            "status": spaceship_status
+        }
+        fetch("{% url 'spaceship-list-create' %}", {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            console.log(data);
+            document.getElementById("add_spaceship_return").innerHTML = data['error']
+        }).catch(function (error) {
+            console.warn(error);
+        });
+    });
+
+</script>
+{% endblock content %}
