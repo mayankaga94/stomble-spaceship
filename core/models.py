@@ -33,15 +33,15 @@ class Location(models.Model):
 # should name be unique?
 class Spaceship(models.Model):
     status_choices = [
-        ('decomissioned',),
-        ('maintenance',),
-        ('operational',)
+        ('decomissioned','decomissioned'),
+        ('maintenance','maintenance'),
+        ('operational','operational')
     ]
     
     name = models.CharField(max_length=255)
     model_name = models.CharField(max_length=10)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    status = models.CharField(max_length=2, choices=status_choices, default='op')
+    status = models.CharField(max_length=13, choices=status_choices, default='operational')
 
     def __str__(self):
         return self.name
